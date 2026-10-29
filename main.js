@@ -959,7 +959,8 @@ if (motion) {
   const easeOut = 'expo.out';
   const fadeUp = { y: 32, autoAlpha: 0, duration: 1.1, ease: easeOut, clearProps: 'transform' };
 
-  // First screen: scroll cue appears after the columns
+  // First screen: avatar card scales in next to the text, scroll cue appears last
+  gsap.from('#avatar', { scale: 0.92, autoAlpha: 0, duration: 1.4, ease: 'back.out(1.2)', delay: 0.25, clearProps: 'transform' });
   gsap.from('.scroll-cue', { y: 12, autoAlpha: 0, duration: 0.8, ease: easeOut, delay: 1.1 });
 
   // Intro (capsule section): now second on the page, so it plays when scrolled into view

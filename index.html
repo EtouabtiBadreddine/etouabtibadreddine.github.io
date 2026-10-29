@@ -110,31 +110,31 @@
 
     <!-- 1. ABOUT — first screen: 3D avatar + presentation -->
     <section class="section surface about-hero" id="about">
-      <div class="container about-grid">
-        <div data-reveal>
-          <p class="label accent-label" data-i18n="about_label">01 · About</p>
-          <h2 data-i18n="about_title">From the lab bench to the <em>language model.</em></h2>
+      <div class="container">
+        <div class="about-grid">
+          <div class="about-copy" data-reveal>
+            <p class="label accent-label" data-i18n="about_label">01 · About</p>
+            <h2 data-i18n="about_title">From the lab bench to the <em>language model.</em></h2>
+            <p class="lead ink" data-i18n="about_p1">I'm in my second year of an engineering degree in Digital Engineering &amp; AI for Health at Suptech Santé, Mohammedia. I work where AI, software and medicine meet.</p>
+            <p data-i18n="about_p2">Before writing code I spent years in labs: industrial quality control at OCP and biological analysis at Hôpital Mohammed V. That taught me something AI often forgets. In health, a wrong answer is a risk, not a bug. So I build systems that cite their sources and say "information not found" when they should.</p>
+            <div class="signature">
+              <img src="assets/photo.jpg" alt="Portrait of Badreddine Etouabti" data-i18n-attr="alt:photo_alt" width="64" height="64">
+              <div>
+                <p class="sig-name">Badreddine Etouabti</p>
+                <p class="label muted-label" data-i18n="sig_role">Digital &amp; AI for Health</p>
+              </div>
+            </div>
+          </div>
           <div class="avatar-card" id="avatar">
             <canvas role="img" aria-label="3D avatar of Badreddine waving" data-i18n-attr="aria-label:avatar_label"></canvas>
             <span class="capsule-badge" aria-hidden="true"><span class="badge-dot"></span><span data-i18n="avatar_hint">Hover to say hi</span></span>
           </div>
-          <div class="signature">
-            <img src="assets/photo.jpg" alt="Portrait of Badreddine Etouabti" data-i18n-attr="alt:photo_alt" width="64" height="64">
-            <div>
-              <p class="sig-name">Badreddine Etouabti</p>
-              <p class="label muted-label" data-i18n="sig_role">Digital &amp; AI for Health</p>
-            </div>
-          </div>
         </div>
-        <div class="about-copy" data-reveal>
-          <p class="lead ink" data-i18n="about_p1">I'm in my second year of an engineering degree in Digital Engineering &amp; AI for Health at Suptech Santé, Mohammedia. I work where AI, software and medicine meet.</p>
-          <p data-i18n="about_p2">Before writing code I spent years in labs: industrial quality control at OCP and biological analysis at Hôpital Mohammed V. That taught me something AI often forgets. In health, a wrong answer is a risk, not a bug. So I build systems that cite their sources and say "information not found" when they should.</p>
-          <div class="stats">
-            <div class="stat"><span class="stat-num" data-count="7" data-suffix="B">7B</span><span class="stat-label" data-i18n="st1">LLM parameters, run fully on a local machine</span></div>
-            <div class="stat"><span class="stat-num" data-count="4">4</span><span class="stat-label" data-i18n="st2">Lab, hospital and industry roles</span></div>
-            <div class="stat"><span class="stat-num" data-count="5">5</span><span class="stat-label" data-i18n="st3">User roles in my Django platform</span></div>
-            <div class="stat"><span class="stat-num" data-count="3">3</span><span class="stat-label" data-i18n="st4">Working languages: Arabic, French, English</span></div>
-          </div>
+        <div class="stats" data-reveal>
+          <div class="stat"><span class="stat-num" data-count="7" data-suffix="B">7B</span><span class="stat-label" data-i18n="st1">LLM parameters, run fully on a local machine</span></div>
+          <div class="stat"><span class="stat-num" data-count="4">4</span><span class="stat-label" data-i18n="st2">Lab, hospital and industry roles</span></div>
+          <div class="stat"><span class="stat-num" data-count="5">5</span><span class="stat-label" data-i18n="st3">User roles in my Django platform</span></div>
+          <div class="stat"><span class="stat-num" data-count="3">3</span><span class="stat-label" data-i18n="st4">Working languages: Arabic, French, English</span></div>
         </div>
       </div>
       <a class="scroll-cue" href="#intro" aria-label="Scroll to the next section" data-i18n-attr="aria-label:scroll_label">
