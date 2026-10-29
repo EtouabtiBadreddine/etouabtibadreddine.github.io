@@ -7,7 +7,7 @@ const translations = {
   en: {},
   fr: {
     doc_title: 'Badreddine Etouabti — IA, data &amp; dev pour la santé',
-    doc_desc: 'Élève ingénieur en Digital &amp; IA pour la santé. Je crée des assistants IA privés et sourcés pour la santé.',
+    doc_desc: 'Portfolio de Badreddine Etouabti (Etouabti Badreddine), élève ingénieur en Digital &amp; IA pour la santé à Casablanca. Je crée des assistants IA privés et sourcés pour la santé.',
     theme_label: 'Basculer mode clair / sombre',
     menu_label: 'Ouvrir le menu',
     photo_alt: 'Portrait de Badreddine Etouabti',
