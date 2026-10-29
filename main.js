@@ -13,6 +13,8 @@ const translations = {
     photo_alt: 'Portrait de Badreddine Etouabti',
     capsule_label: 'Capsule 3D',
     capsule_hint: 'Faites-la tourner',
+    avatar_label: 'Avatar 3D de Badreddine qui fait coucou',
+    avatar_hint: 'Survolez pour un coucou',
 
     nav_work: 'Projets',
     nav_about: 'À propos',
@@ -400,6 +402,251 @@ if (tickerAnim) {
   new ResizeObserver(resize).observe(host);
   new IntersectionObserver(([entry]) => setRunning(entry.isIntersecting)).observe(host);
   document.addEventListener('visibilitychange', () => setRunning(!document.hidden && host.getBoundingClientRect().bottom > 0));
+  resize();
+})();
+
+/* ---------- 3D avatar (About) ----------
+   Stylized character built from simple shapes: curly hair, brown eyes,
+   black hoodie. Head + eyes follow the cursor, blinks, waves on view / hover / tap. */
+(function initAvatar() {
+  const host = document.getElementById('avatar');
+  const canvas = host.querySelector('canvas');
+  const THREE = window.THREE;
+  let renderer;
+  try {
+    if (!THREE) throw new Error('three.js missing');
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  } catch (e) {
+    host.classList.add('no-webgl');
+    return;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 100);
+  const mat = (hex, rough, extra) => new THREE.MeshStandardMaterial({
+    color: new THREE.Color(hex).convertSRGBToLinear(), roughness: rough, metalness: 0, ...extra,
+  });
+  const add = (parent, geo, material, pos, scale, rot) => {
+    const m = new THREE.Mesh(geo, material);
+    if (pos) m.position.set(...pos);
+    if (scale) m.scale.set(...scale);
+    if (rot) m.rotation.set(...rot);
+    parent.add(m);
+    return m;
+  };
+
+  const skin = mat('#EDB797', 0.55);
+  const hair = mat('#2A1C15', 0.5);
+  const hoodie = mat('#1B1C20', 0.92, { side: THREE.DoubleSide });
+  const white = mat('#FFFFFF', 0.25);
+  const brow = mat('#2A1A12', 0.7);
+
+  const rig = new THREE.Group();
+  scene.add(rig);
+
+  // ----- Head (ellipsoid; surfZ gives the face surface depth at x, y) -----
+  const HA = 0.9, HB = 1.05, HC = 0.92;
+  const surfZ = (x, y) => HC * Math.sqrt(Math.max(0, 1 - (x / HA) ** 2 - (y / HB) ** 2));
+  // flat shapes (mouth, blush) are wrapped onto the face curve
+  const hug = (geo, cx, cy) => {
+    const p = geo.attributes.position;
+    for (let i = 0; i < p.count; i++) p.setZ(i, surfZ(p.getX(i) + cx, p.getY(i) + cy) - surfZ(cx, cy));
+    return geo;
+  };
+
+  const head = new THREE.Group();
+  rig.add(head);
+  add(head, new THREE.SphereGeometry(1, 64, 64), skin, null, [HA, HB, HC]);
+  [-1, 1].forEach((s) => add(head, new THREE.SphereGeometry(0.2, 32, 32), skin, [s * 0.88, -0.05, -0.05], [0.55, 1, 0.75]));
+  add(head, new THREE.SphereGeometry(0.15, 32, 32), mat('#EDB194', 0.5), [0, -0.14, surfZ(0, -0.14) - 0.02], [1, 0.85, 0.9]);
+
+  // eyes: white ball + iris and pupil caps, so the whole eye can rotate to look around
+  const eyes = [-1, 1].map((s) => {
+    const g = new THREE.Group();
+    g.position.set(s * 0.34, 0.05, surfZ(0.34, 0.05) - 0.13);
+    add(g, new THREE.SphereGeometry(0.21, 32, 32), white);
+    const cap = (r, size, m) => add(g, new THREE.SphereGeometry(r, 32, 16, 0, Math.PI * 2, 0, size), m, null, null, [Math.PI / 2, 0, 0]);
+    cap(0.212, 0.66, mat('#7A4317', 0.3));
+    cap(0.214, 0.32, mat('#120A06', 0.2));
+    add(g, new THREE.SphereGeometry(0.042, 16, 16), white, [0.06, 0.07, 0.2]);
+    head.add(g);
+    return g;
+  });
+
+  [-1, 1].forEach((s) => {
+    const pts = [[0.55, 0.33], [0.36, 0.42], [0.15, 0.38]].map(([x, y]) => new THREE.Vector3(s * x, y, surfZ(x, y) + 0.03));
+    add(head, new THREE.TubeGeometry(new THREE.CatmullRomCurve3(pts), 20, 0.05, 12), brow);
+    [pts[0], pts[2]].forEach((p) => add(head, new THREE.SphereGeometry(0.05, 12, 12), brow, [p.x, p.y, p.z]));
+  });
+
+  // big open smile with teeth
+  const mouthShape = new THREE.Shape();
+  mouthShape.moveTo(-0.3, 0.04);
+  mouthShape.quadraticCurveTo(0, -0.04, 0.3, 0.04);
+  mouthShape.quadraticCurveTo(0, -0.36, -0.3, 0.04);
+  const teethShape = new THREE.Shape();
+  teethShape.moveTo(-0.24, 0);
+  teethShape.quadraticCurveTo(0, -0.07, 0.24, 0);
+  teethShape.lineTo(0.19, -0.04);
+  teethShape.quadraticCurveTo(0, -0.13, -0.19, -0.04);
+  const MY = -0.44;
+  const mouth = new THREE.Group();
+  // pushed forward a little: the flat triangles between outline points would otherwise sink into the curved face
+  mouth.position.set(0, MY, surfZ(0, MY) + 0.035);
+  add(mouth, hug(new THREE.ShapeGeometry(mouthShape, 24), 0, MY), mat('#5B1E1E', 0.6));
+  add(mouth, hug(new THREE.ShapeGeometry(teethShape, 24), 0, MY), white, [0, 0, 0.004]);
+  head.add(mouth);
+
+  const blush = new THREE.MeshBasicMaterial({ color: new THREE.Color('#FF8A80').convertSRGBToLinear(), transparent: true, opacity: 0.28, depthWrite: false });
+  [-1, 1].forEach((s) => {
+    const cx = s * 0.5, cy = -0.24;
+    add(head, hug(new THREE.CircleGeometry(0.15, 32), cx, cy), blush, [cx, cy, surfZ(cx, cy) + 0.008]);
+  });
+
+  // curly hair: blobs over the scalp (fibonacci sphere), small curls on top, fringe curls in front
+  let seed = 11;
+  const rand = () => (seed = (seed * 16807) % 2147483647) / 2147483647;
+  const blob = new THREE.SphereGeometry(1, 20, 20);
+  const N = 240;
+  for (let i = 0; i < N; i++) {
+    const y = 1 - (i / (N - 1)) * 2;
+    const r = Math.sqrt(1 - y * y);
+    const th = i * 2.39996;
+    const d = new THREE.Vector3(Math.cos(th) * r, y, Math.sin(th) * r);
+    const hairline = d.z > 0.45 ? 0.62 : d.z > -0.1 ? 0.3 : -0.3;
+    if (d.y < hairline) continue;
+    const lift = 1.0 + rand() * 0.05;
+    const s = 0.17 + rand() * 0.09;
+    add(head, blob, hair, [d.x * HA * lift, d.y * HB * lift, d.z * HC * lift], [s, s * (0.9 + rand() * 0.2), s]);
+    if (d.y > 0.5 && i % 2) {
+      const c = 0.11 + rand() * 0.05;
+      add(head, blob, hair, [d.x * HA * 1.14, d.y * HB * 1.16, d.z * HC * 1.14], [c, c, c]);
+    }
+  }
+  const curl = new THREE.TorusGeometry(0.11, 0.055, 12, 24, Math.PI * 1.5);
+  [[-0.5, 0.6, 0.4], [-0.26, 0.7, -0.5], [0.02, 0.66, 0.7], [0.27, 0.7, -0.2], [0.5, 0.6, 1]].forEach(([x, y, rz]) => {
+    add(head, curl, hair, [x, y, surfZ(x, y) + 0.1], null, [0.35, 0, rz]);
+  });
+  [-1, 1].forEach((s) => add(head, curl, hair, [s * 0.86, 0.45, 0.1], [1.2, 1.2, 1.2], [0, s * 1.2, s * 0.8]));
+
+  // ----- Body: neck, hoodie, hood collar, drawstrings -----
+  add(rig, new THREE.CylinderGeometry(0.3, 0.34, 0.6, 32), skin, [0, -1.15, -0.05]);
+  const torsoPts = [[0.001, -1.3], [0.45, -1.32], [0.85, -1.42], [1.1, -1.65], [1.2, -2], [1.18, -3.8], [0.001, -3.8]];
+  const torso = add(rig, new THREE.LatheGeometry(torsoPts.map(([x, y]) => new THREE.Vector2(x, y)), 64), hoodie, null, [1, 1, 0.68]);
+  add(rig, new THREE.TorusGeometry(0.52, 0.2, 24, 64), hoodie, [0, -1.38, -0.02], [1.15, 1, 0.95], [Math.PI / 2 - 0.25, 0, 0]);
+  add(rig, new THREE.SphereGeometry(0.7, 32, 32), hoodie, [0, -1.25, -0.45], [1.2, 0.6, 0.6]);
+  const cord = mat('#2C2D33', 0.8);
+  [-1, 1].forEach((s) => {
+    add(rig, new THREE.CylinderGeometry(0.022, 0.022, 0.75, 8), cord, [s * 0.17, -1.95, 0.83], null, [-0.15, 0, s * 0.04]);
+    add(rig, new THREE.CylinderGeometry(0.03, 0.03, 0.1, 8), cord, [s * 0.185, -2.35, 0.88]);
+  });
+
+  // arms: shoulder -> elbow -> hand groups so the right one can wave
+  const sleeve = new THREE.CylinderGeometry(0.27, 0.25, 1, 24);
+  const makeArm = (s) => {
+    const shoulder = new THREE.Group();
+    shoulder.position.set(s * 1.05, -1.82, 0);
+    add(shoulder, new THREE.SphereGeometry(0.29, 24, 24), hoodie);
+    add(shoulder, sleeve, hoodie, [0, -0.5, 0]);
+    const elbow = new THREE.Group();
+    elbow.position.y = -1;
+    add(elbow, new THREE.SphereGeometry(0.26, 24, 24), hoodie);
+    add(elbow, sleeve, hoodie, [0, -0.5, 0], [0.95, 1, 0.95]);
+    add(elbow, new THREE.SphereGeometry(0.22, 24, 24), skin, [0, -1.12, 0], [0.9, 1.1, 0.7]);
+    add(elbow, new THREE.SphereGeometry(0.08, 16, 16), skin, [-s * 0.17, -1.0, 0.06], [1, 1.5, 1]);
+    shoulder.add(elbow);
+    rig.add(shoulder);
+    shoulder.rotation.z = s * 0.12;
+    return { shoulder, elbow };
+  };
+  makeArm(-1);
+  const armR = makeArm(1);
+
+  scene.add(new THREE.HemisphereLight(0xfff4ea, 0x8a8f99, 0.8));
+  const key = new THREE.DirectionalLight(0xfff1e0, 1);
+  key.position.set(-3, 4, 5);
+  const rim = new THREE.DirectionalLight(0xbfcaff, 0.7);
+  rim.position.set(4, 2, -4);
+  const fill = new THREE.DirectionalLight(0xffffff, 0.35);
+  fill.position.set(3, -1, 5);
+  scene.add(key, rim, fill);
+
+  // frame hair-to-chest (y ≈ 1.6 … -3) plus room for the raised hand
+  const resize = () => {
+    const w = host.clientWidth, h = host.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    const tan = Math.tan(THREE.MathUtils.degToRad(camera.fov / 2));
+    const dist = Math.max(2.45 / tan, 2.5 / (tan * camera.aspect));
+    camera.position.set(0, -0.7, dist);
+    camera.lookAt(0, -0.7, 0);
+    camera.updateProjectionMatrix();
+    render();
+  };
+
+  // interaction state
+  const target = { x: 0, y: 0 }, look = { x: 0, y: 0 };
+  const clock = new THREE.Clock();
+  let waveStart = -10, nextBlink = 2;
+  const WAVE = 2.6;
+  const wave = () => {
+    const t = clock.getElapsedTime();
+    if (t - waveStart > WAVE) waveStart = t;
+  };
+  host.addEventListener('pointermove', (e) => {
+    const r = host.getBoundingClientRect();
+    target.x = ((e.clientX - r.left) / r.width - 0.5) * 2;
+    target.y = ((e.clientY - r.top) / r.height - 0.5) * 2;
+  });
+  host.addEventListener('pointerleave', () => { target.x = 0; target.y = 0; });
+  host.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') wave(); });
+  host.addEventListener('click', wave);
+
+  function render() {
+    const t = clock.getElapsedTime();
+    if (!reduceMotion) {
+      rig.position.y = Math.sin(t * 1.6) * 0.03;
+      torso.scale.y = 1 + Math.sin(t * 1.6) * 0.006;
+
+      look.x += (target.x - look.x) * 0.06;
+      look.y += (target.y - look.y) * 0.06;
+      head.rotation.y = look.x * 0.35;
+      head.rotation.x = look.y * 0.18;
+
+      if (t > nextBlink + 0.16) nextBlink = t + 2.5 + rand() * 3;
+      const b = t > nextBlink ? Math.sin(((t - nextBlink) / 0.16) * Math.PI) : 0;
+      eyes.forEach((eye) => {
+        eye.rotation.y = look.x * 0.3;
+        eye.rotation.x = look.y * 0.25;
+        eye.scale.y = 1 - b * 0.9;
+      });
+
+      const w = t - waveStart;
+      const env = w < 0 || w > WAVE ? 0 : Math.min(1, w / 0.45, (WAVE - w) / 0.5);
+      const e = env * env * (3 - 2 * env);
+      armR.shoulder.rotation.z = 0.12 + e * 2.1;
+      armR.elbow.rotation.z = e * (0.8 + Math.sin(w * 11) * 0.4);
+      head.rotation.z = e * 0.08;
+    }
+    renderer.render(scene, camera);
+  }
+
+  let running = false, frame = 0, greeted = false;
+  const loop = () => { render(); frame = requestAnimationFrame(loop); };
+  const setRunning = (on) => {
+    if (reduceMotion || on === running) return;
+    running = on;
+    if (on) frame = requestAnimationFrame(loop);
+    else cancelAnimationFrame(frame);
+  };
+  new ResizeObserver(resize).observe(host);
+  new IntersectionObserver(([entry]) => {
+    setRunning(entry.isIntersecting);
+    if (entry.isIntersecting && !greeted) { greeted = true; setTimeout(wave, 500); }
+  }, { threshold: 0.4 }).observe(host);
   resize();
 })();
 
