@@ -18,9 +18,12 @@ const translations = {
 
     nav_work: 'Projets',
     nav_about: 'À propos',
-    nav_experience: 'Parcours',
+    nav_experience: 'Expérience',
+    nav_education: 'Formation',
     nav_contact: 'Contact',
     nav_email: 'M’écrire',
+    scroll_hint: 'Défiler',
+    scroll_label: 'Aller à la section suivante',
 
     hero_status: 'Ouvert aux stages · IA, data &amp; dev en santé',
     hero_title: '<span class="line">Je crée une IA</span> <span class="line">en qui la <em>santé</em></span> <span class="line">peut avoir confiance.</span>',
@@ -34,7 +37,7 @@ const translations = {
     tick_medical: 'Données médicales',
     tick_qc: 'Contrôle qualité',
 
-    work_label: '01 · Projets choisis',
+    work_label: '02 · Projets choisis',
     work_title: 'Ce que j’ai <em>construit</em>',
     work_note: 'D’un assistant médical IA privé au travail de labo qui m’a appris pourquoi la précision compte.',
     feat_label: 'À la une · Alexsys Solutions · 2026',
@@ -70,7 +73,7 @@ const translations = {
     tag_water: 'Chimie de l’eau',
     tag_health: 'Santé publique',
 
-    about_label: '02 · À propos',
+    about_label: '01 · À propos',
     about_title: 'De la paillasse au <em>modèle de langage.</em>',
     sig_role: 'Digital &amp; IA pour la santé',
     about_p1: 'Je suis en deuxième année du cycle ingénieur en Ingénierie Digitale &amp; IA pour la Santé à Suptech Santé, Mohammedia. Je travaille là où l’IA, le logiciel et la médecine se rencontrent.',
@@ -80,12 +83,13 @@ const translations = {
     st3: 'Rôles utilisateurs dans ma plateforme Django',
     st4: 'Langues de travail : arabe, français, anglais',
 
-    exp_label: '03 · Expérience &amp; formation',
+    exp_label: '03 · Expérience professionnelle',
     exp_title: 'Un parcours fondé sur la <em>précision.</em>',
+    edu_label: '04 · Formation',
+    edu_title: 'D’où vient la <em>rigueur.</em>',
     k_work: 'Emploi',
-    k_edu: 'Formation',
     k_intern: 'Stage',
-    e1_r: 'Stagiaire développeur IA',
+    e1_r: 'Stagiaire ingénieur IA',
     e1_d: 'Conception de PharmaMind, un assistant RAG sur les notices de médicaments tournant sur un LLM local, et du catalogue Flask qui l’entoure.',
     e2_date: '2025 — auj.',
     e2_r: 'Cycle ingénieur, Digital &amp; IA pour la santé',
@@ -102,7 +106,7 @@ const translations = {
     e6_r: 'Licence en chimie industrielle',
     e6_d: 'Projet de fin d’études sur la potabilité de l’eau des puits à Oualidia.',
 
-    sk_label: '04 · Boîte à outils',
+    sk_label: '05 · Boîte à outils',
     sk_title: 'Avec quoi je <em>travaille.</em>',
     sk1: 'IA générative &amp; LLM',
     sk2: 'Développement',
@@ -114,7 +118,7 @@ const translations = {
     chip_phys: 'Physiologie',
     chip_sig: 'Traitement du signal',
 
-    ct_label: '05 · Contact',
+    ct_label: '06 · Contact',
     ct_title: 'Construisons une IA qui <em>aide les patients.</em>',
     ct_text: 'Je cherche un stage en IA, data ou logiciel pour la santé. Basé à Casablanca, ouvert au télétravail.',
     ct_copy: 'Copier',
@@ -123,6 +127,221 @@ const translations = {
   },
 };
 translations.en.ct_copied = 'Copied!';
+
+/* ---------- Tag explanations ----------
+   Shown in the popover when a project tag is clicked.
+   `what` = what the technology is. `how` = how it was used, per project
+   (keys match data-project on the cards: pharmamind, checker, boarding, water). */
+const tagInfo = {
+  RAG: {
+    what: {
+      en: 'Retrieval-augmented generation: before answering, the AI first looks up relevant passages in trusted documents, then writes its answer from those passages only.',
+      fr: 'Génération augmentée par récupération : avant de répondre, l’IA cherche d’abord les passages pertinents dans des documents fiables, puis rédige sa réponse uniquement à partir de ceux-ci.',
+    },
+    how: {
+      pharmamind: {
+        en: 'In PharmaMind, the documents are official medication leaflets, so every answer is grounded in them and cites its source.',
+        fr: 'Dans PharmaMind, les documents sont les notices officielles des médicaments : chaque réponse s’y appuie et cite sa source.',
+      },
+    },
+  },
+  Ollama: {
+    what: {
+      en: 'A free tool that runs large language models on your own computer, with no cloud service involved.',
+      fr: 'Un outil gratuit qui fait tourner des grands modèles de langage sur votre propre ordinateur, sans aucun service cloud.',
+    },
+    how: {
+      pharmamind: {
+        en: 'It runs the Qwen2.5-7B model locally, so patient questions never leave the machine.',
+        fr: 'Il fait tourner le modèle Qwen2.5-7B en local : les questions des patients ne quittent jamais la machine.',
+      },
+    },
+  },
+  'Qwen2.5-7B': {
+    what: {
+      en: 'An open-source language model with 7 billion parameters: small enough to run on a single machine, capable enough to write clear answers.',
+      fr: 'Un modèle de langage open source de 7 milliards de paramètres : assez léger pour tourner sur une seule machine, assez capable pour rédiger des réponses claires.',
+    },
+    how: {
+      pharmamind: {
+        en: 'It writes PharmaMind’s answers from the leaflet passages it is given, and nothing else.',
+        fr: 'Il rédige les réponses de PharmaMind à partir des passages de notice qu’on lui fournit, et rien d’autre.',
+      },
+    },
+  },
+  'bge-m3': {
+    what: {
+      en: 'An embedding model: it turns a sentence into a list of numbers that captures its meaning, so similar sentences get similar numbers. It works across languages.',
+      fr: 'Un modèle d’embeddings : il transforme une phrase en une liste de nombres qui capture son sens, pour que des phrases proches aient des nombres proches. Il fonctionne dans plusieurs langues.',
+    },
+    how: {
+      pharmamind: {
+        en: 'Both the question and every leaflet passage go through bge-m3, so the closest passages can be found by comparing numbers.',
+        fr: 'La question et chaque passage de notice passent par bge-m3, ce qui permet de retrouver les passages les plus proches en comparant des nombres.',
+      },
+    },
+  },
+  NumPy: {
+    what: {
+      en: 'The standard Python library for fast math on large tables of numbers.',
+      fr: 'La bibliothèque Python de référence pour les calculs rapides sur de grands tableaux de nombres.',
+    },
+    how: {
+      pharmamind: {
+        en: 'It computes the cosine similarity between the question and all leaflet passages in one go.',
+        fr: 'Il calcule la similarité cosinus entre la question et tous les passages de notice en une seule opération.',
+      },
+    },
+  },
+  Flask: {
+    what: {
+      en: 'A lightweight Python framework for building web applications.',
+      fr: 'Un framework Python léger pour créer des applications web.',
+    },
+    how: {
+      pharmamind: {
+        en: 'Flask serves the drug catalogue and the chat interface of the assistant.',
+        fr: 'Flask sert le catalogue de médicaments et l’interface de discussion de l’assistant.',
+      },
+      checker: {
+        en: 'The checker is a Flask app organised in three layers: web pages, business rules and database.',
+        fr: 'Le vérificateur est une application Flask organisée en trois couches : pages web, règles métier et base de données.',
+      },
+    },
+  },
+  pypdf: {
+    what: {
+      en: 'A Python library that reads PDF files and extracts their text.',
+      fr: 'Une bibliothèque Python qui lit les fichiers PDF et en extrait le texte.',
+    },
+    how: {
+      pharmamind: {
+        en: 'It extracts the leaflet text, which is then split by section (indications, dosage, contraindications) before indexing.',
+        fr: 'Il extrait le texte des notices, ensuite découpé par rubrique (indications, posologie, contre-indications) avant l’indexation.',
+      },
+    },
+  },
+  SQLAlchemy: {
+    what: {
+      en: 'A Python library that lets you work with a database through Python objects instead of raw SQL queries.',
+      fr: 'Une bibliothèque Python qui permet de manipuler une base de données avec des objets Python plutôt qu’avec des requêtes SQL brutes.',
+    },
+    how: {
+      checker: {
+        en: 'It defines the drug, interaction and user tables and handles every read and write.',
+        fr: 'Elle définit les tables médicaments, interactions et utilisateurs, et gère toutes les lectures et écritures.',
+      },
+    },
+  },
+  SQLite: {
+    what: {
+      en: 'A small database stored in a single file, with no server to install.',
+      fr: 'Une petite base de données stockée dans un seul fichier, sans serveur à installer.',
+    },
+    how: {
+      checker: {
+        en: 'It stores the public BDPM (France) and data.gov.ma drug data the checker searches.',
+        fr: 'Elle stocke les données publiques de la BDPM (France) et de data.gov.ma dans lesquelles le vérificateur cherche.',
+      },
+    },
+  },
+  Auth: {
+    what: {
+      en: 'Authentication: the login system that checks who a user is and what they are allowed to do.',
+      fr: 'Authentification : le système de connexion qui vérifie qui est l’utilisateur et ce qu’il a le droit de faire.',
+    },
+    how: {
+      checker: {
+        en: 'Multi-role login: each role gets its own permissions and screens.',
+        fr: 'Connexion multi-rôles : chaque rôle a ses propres permissions et écrans.',
+      },
+    },
+  },
+  Django: {
+    what: {
+      en: 'A complete Python web framework with a built-in admin, user accounts and database tools.',
+      fr: 'Un framework web Python complet, avec administration, comptes utilisateurs et outils de base de données intégrés.',
+    },
+    how: {
+      boarding: {
+        en: 'The whole boarding school platform runs on Django: students, rooms, staff, incident reports and the dashboard.',
+        fr: 'Toute la plateforme d’internat tourne sur Django : élèves, chambres, personnel, signalements et tableau de bord.',
+      },
+    },
+  },
+  Python: {
+    what: {
+      en: 'The programming language I use for everything, from data analysis to web apps and AI.',
+      fr: 'Le langage de programmation que j’utilise pour tout, de l’analyse de données aux applications web et à l’IA.',
+    },
+    how: {
+      boarding: {
+        en: 'All the server-side logic of the platform is written in Python.',
+        fr: 'Toute la logique côté serveur de la plateforme est écrite en Python.',
+      },
+    },
+  },
+  Roles: {
+    what: {
+      en: 'User roles define what each type of user can see and do in an application.',
+      fr: 'Les rôles utilisateurs définissent ce que chaque type d’utilisateur peut voir et faire dans une application.',
+    },
+    how: {
+      boarding: {
+        en: 'Five roles with granular permissions, so staff, students and administrators each get the right access.',
+        fr: 'Cinq rôles avec des permissions fines, pour que le personnel, les élèves et les administrateurs aient chacun le bon accès.',
+      },
+    },
+  },
+  Email: {
+    what: {
+      en: 'Automatic email notifications sent by the application when something happens.',
+      fr: 'Notifications e-mail automatiques envoyées par l’application quand quelque chose se produit.',
+    },
+    how: {
+      boarding: {
+        en: 'The platform emails users directly, so nobody has to keep checking the dashboard to stay informed.',
+        fr: 'La plateforme envoie directement des e-mails aux utilisateurs : personne n’a besoin de surveiller le tableau de bord pour rester informé.',
+      },
+    },
+  },
+  'Lab analysis': {
+    what: {
+      en: 'Measuring the physical and chemical properties of samples in a laboratory, with calibrated instruments.',
+      fr: 'Mesurer les propriétés physiques et chimiques d’échantillons en laboratoire, avec des instruments étalonnés.',
+    },
+    how: {
+      water: {
+        en: 'Well water samples from Oualidia were analysed for their physico-chemical parameters.',
+        fr: 'Des échantillons d’eau de puits d’Oualidia ont été analysés pour leurs paramètres physico-chimiques.',
+      },
+    },
+  },
+  'Water chemistry': {
+    what: {
+      en: 'The study of what water contains: minerals, salts, acidity and contaminants.',
+      fr: 'L’étude de ce que contient l’eau : minéraux, sels, acidité et contaminants.',
+    },
+    how: {
+      water: {
+        en: 'Each result was compared with Morocco’s national drinking-water standards.',
+        fr: 'Chaque résultat a été comparé aux normes marocaines de potabilité.',
+      },
+    },
+  },
+  'Public health': {
+    what: {
+      en: 'Protecting the health of a whole population, not just one patient.',
+      fr: 'Protéger la santé d’une population entière, et pas seulement d’un patient.',
+    },
+    how: {
+      water: {
+        en: 'The study answers a concrete question: is this well water safe for the people who drink it?',
+        fr: 'L’étude répond à une question concrète : cette eau de puits est-elle sûre pour les gens qui la boivent ?',
+      },
+    },
+  },
+};
 
 const root = document.documentElement;
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -650,6 +869,87 @@ if (tickerAnim) {
   resize();
 })();
 
+/* ---------- Tag popovers ---------- */
+(function initTagPopovers() {
+  let open = null; // { btn, pop }
+  const close = (focusBack) => {
+    if (!open) return;
+    const { btn, pop } = open;
+    open = null;
+    pop.remove();
+    btn.setAttribute('aria-expanded', 'false');
+    btn.removeAttribute('aria-describedby');
+    btn.closest('.card')?.classList.remove('has-pop');
+    if (focusBack) btn.focus();
+  };
+  const pick = (obj) => obj && (obj[lang] ?? obj.en);
+  const toggle = (btn) => {
+    if (open && open.btn === btn) { close(); return; }
+    close();
+    const info = tagInfo[btn.dataset.tag];
+    if (!info) return;
+    const project = btn.closest('[data-project]')?.dataset.project;
+    const what = pick(info.what);
+    const how = pick(info.how?.[project]) ?? pick(info.how?.default);
+
+    const pop = document.createElement('div');
+    pop.className = 'tag-pop';
+    pop.id = 'pop-' + btn.dataset.tag.replace(/\W+/g, '-').toLowerCase() + '-' + (project || 'x');
+    pop.setAttribute('role', 'note');
+    pop.innerHTML = `<strong>${btn.textContent}</strong>`
+      + (what ? `<span>${what}</span>` : '')
+      + (how ? `<span class="pop-how">${how}</span>` : '');
+    btn.parentElement.append(pop);
+    btn.setAttribute('aria-expanded', 'true');
+    btn.setAttribute('aria-describedby', pop.id);
+    btn.closest('.card')?.classList.add('has-pop');
+
+    // keep it inside the viewport: flip to the right edge / above the tag when needed
+    const r = pop.getBoundingClientRect();
+    if (r.right > window.innerWidth - 12) pop.classList.add('right');
+    if (r.bottom > window.innerHeight - 12 && r.top - r.height - 48 > 0) pop.classList.add('up');
+    requestAnimationFrame(() => pop.classList.add('show'));
+    open = { btn, pop };
+  };
+
+  document.querySelectorAll('.tags .tag').forEach((btn) => {
+    btn.addEventListener('click', (e) => { e.stopPropagation(); toggle(btn); });
+  });
+  document.addEventListener('click', (e) => { if (open && !open.pop.contains(e.target)) close(); });
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && open) close(true); });
+  langBtn.addEventListener('click', () => close());
+})();
+
+/* ---------- Project cards: lift + 3D tilt + glow following the pointer ---------- */
+const finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+if (motion && finePointer) {
+  document.querySelectorAll('.project').forEach((card) => {
+    const rotX = gsap.quickTo(card, 'rotationX', { duration: 0.5, ease: 'power3.out' });
+    const rotY = gsap.quickTo(card, 'rotationY', { duration: 0.5, ease: 'power3.out' });
+    const lift = gsap.quickTo(card, 'y', { duration: 0.5, ease: 'power3.out' });
+    card.addEventListener('pointerenter', () => { gsap.set(card, { transformPerspective: 900 }); lift(-6); });
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      const px = (e.clientX - r.left) / r.width;
+      const py = (e.clientY - r.top) / r.height;
+      card.style.setProperty('--mx', `${px * 100}%`);
+      card.style.setProperty('--my', `${py * 100}%`);
+      rotX((0.5 - py) * 8);
+      rotY((px - 0.5) * 10);
+    });
+    card.addEventListener('pointerleave', () => { rotX(0); rotY(0); lift(0); });
+  });
+} else {
+  // touch / reduced motion: still light the glow ring from the centre
+  document.querySelectorAll('.project').forEach((card) => {
+    card.addEventListener('pointermove', (e) => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', `${((e.clientX - r.left) / r.width) * 100}%`);
+      card.style.setProperty('--my', `${((e.clientY - r.top) / r.height) * 100}%`);
+    });
+  });
+}
+
 /* ---------- Stats count-up ---------- */
 const statNums = document.querySelectorAll('.stat-num');
 
@@ -659,10 +959,13 @@ if (motion) {
   const easeOut = 'expo.out';
   const fadeUp = { y: 32, autoAlpha: 0, duration: 1.1, ease: easeOut, clearProps: 'transform' };
 
-  // Intro
+  // First screen: scroll cue appears after the columns
+  gsap.from('.scroll-cue', { y: 12, autoAlpha: 0, duration: 0.8, ease: easeOut, delay: 1.1 });
+
+  // Intro (capsule section): now second on the page, so it plays when scrolled into view
   const heroWords = heroTitle.querySelectorAll('.w');
   gsap.set(heroTitle, { autoAlpha: 1 });
-  const intro = gsap.timeline();
+  const intro = gsap.timeline({ scrollTrigger: { trigger: '.hero', start: 'top 70%', once: true } });
   intro
     .from('[data-hero="pill"]', { y: 16, autoAlpha: 0, duration: 0.8, ease: easeOut }, 0.1)
     .from(heroWords, { y: 24, autoAlpha: 0, filter: 'blur(10px)', duration: 0.9, ease: easeOut, stagger: 0.07, clearProps: 'filter' }, 0.2)

@@ -67,7 +67,7 @@
 </head>
 <body>
 
-  <!-- 1. NAV -->
+  <!-- NAV -->
   <header class="nav">
     <div class="container nav-inner">
       <a href="#top" class="brand">
@@ -75,9 +75,10 @@
         Badreddine Etouabti
       </a>
       <nav class="nav-links" aria-label="Primary">
-        <a href="#work" data-i18n="nav_work">Work</a>
         <a href="#about" data-i18n="nav_about">About</a>
+        <a href="#work" data-i18n="nav_work">Work</a>
         <a href="#experience" data-i18n="nav_experience">Experience</a>
+        <a href="#education" data-i18n="nav_education">Education</a>
         <a href="#contact" data-i18n="nav_contact">Contact</a>
         <a href="https://www.linkedin.com/in/et-badreddine-/" target="_blank" rel="noopener">LinkedIn ↗</a>
         <a href="https://github.com/EtouabtiBadreddine" target="_blank" rel="noopener">GitHub ↗</a>
@@ -94,9 +95,10 @@
       </div>
     </div>
     <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
-      <a href="#work" data-i18n="nav_work">Work</a>
       <a href="#about" data-i18n="nav_about">About</a>
+      <a href="#work" data-i18n="nav_work">Work</a>
       <a href="#experience" data-i18n="nav_experience">Experience</a>
+      <a href="#education" data-i18n="nav_education">Education</a>
       <a href="#contact" data-i18n="nav_contact">Contact</a>
       <a href="https://www.linkedin.com/in/et-badreddine-/" target="_blank" rel="noopener">LinkedIn ↗</a>
       <a href="https://github.com/EtouabtiBadreddine" target="_blank" rel="noopener">GitHub ↗</a>
@@ -106,8 +108,43 @@
 
   <main id="top">
 
-    <!-- 2. INTRO -->
-    <section class="hero">
+    <!-- 1. ABOUT — first screen: 3D avatar + presentation -->
+    <section class="section surface about-hero" id="about">
+      <div class="container about-grid">
+        <div data-reveal>
+          <p class="label accent-label" data-i18n="about_label">01 · About</p>
+          <h2 data-i18n="about_title">From the lab bench to the <em>language model.</em></h2>
+          <div class="avatar-card" id="avatar">
+            <canvas role="img" aria-label="3D avatar of Badreddine waving" data-i18n-attr="aria-label:avatar_label"></canvas>
+            <span class="capsule-badge" aria-hidden="true"><span class="badge-dot"></span><span data-i18n="avatar_hint">Hover to say hi</span></span>
+          </div>
+          <div class="signature">
+            <img src="assets/photo.jpg" alt="Portrait of Badreddine Etouabti" data-i18n-attr="alt:photo_alt" width="64" height="64">
+            <div>
+              <p class="sig-name">Badreddine Etouabti</p>
+              <p class="label muted-label" data-i18n="sig_role">Digital &amp; AI for Health</p>
+            </div>
+          </div>
+        </div>
+        <div class="about-copy" data-reveal>
+          <p class="lead ink" data-i18n="about_p1">I'm in my second year of an engineering degree in Digital Engineering &amp; AI for Health at Suptech Santé, Mohammedia. I work where AI, software and medicine meet.</p>
+          <p data-i18n="about_p2">Before writing code I spent years in labs: industrial quality control at OCP and biological analysis at Hôpital Mohammed V. That taught me something AI often forgets. In health, a wrong answer is a risk, not a bug. So I build systems that cite their sources and say "information not found" when they should.</p>
+          <div class="stats">
+            <div class="stat"><span class="stat-num" data-count="7" data-suffix="B">7B</span><span class="stat-label" data-i18n="st1">LLM parameters, run fully on a local machine</span></div>
+            <div class="stat"><span class="stat-num" data-count="4">4</span><span class="stat-label" data-i18n="st2">Lab, hospital and industry roles</span></div>
+            <div class="stat"><span class="stat-num" data-count="5">5</span><span class="stat-label" data-i18n="st3">User roles in my Django platform</span></div>
+            <div class="stat"><span class="stat-num" data-count="3">3</span><span class="stat-label" data-i18n="st4">Working languages: Arabic, French, English</span></div>
+          </div>
+        </div>
+      </div>
+      <a class="scroll-cue" href="#intro" aria-label="Scroll to the next section" data-i18n-attr="aria-label:scroll_label">
+        <span data-i18n="scroll_hint">Scroll</span>
+        <i data-lucide="chevron-down"></i>
+      </a>
+    </section>
+
+    <!-- 2. INTRO — capsule + headline -->
+    <section class="hero" id="intro">
       <div class="container hero-grid">
         <div class="hero-copy">
           <p class="status-pill hero-anim" data-hero="pill">
@@ -157,13 +194,13 @@
       <div class="container">
         <div class="section-head split" data-reveal>
           <div>
-            <p class="label accent-label" data-i18n="work_label">01 · Selected work</p>
+            <p class="label accent-label" data-i18n="work_label">02 · Selected work</p>
             <h2 data-i18n="work_title">Things I've <em>built</em></h2>
           </div>
           <p class="side-note" data-i18n="work_note">From a private medical AI assistant to the lab work that taught me why accuracy matters.</p>
         </div>
 
-        <article class="featured card" data-reveal>
+        <article class="featured card" data-reveal data-project="pharmamind">
           <div class="featured-main">
             <p class="label muted-label" data-i18n="feat_label">Featured · Alexsys Solutions · 2026</p>
             <h3 class="featured-title">PharmaMind</h3>
@@ -182,8 +219,15 @@
                 <span data-i18n="hl3_d">Flask app in 3 layers with SQLAlchemy + SQLite, multi-role login and alerts ranked by severity.</span>
               </li>
             </ul>
+            <!-- Tags are buttons: click one to see what it is and how it was used (text lives in tagInfo, main.js) -->
             <ul class="tags">
-              <li>RAG</li><li>Ollama</li><li>Qwen2.5-7B</li><li>bge-m3</li><li>NumPy</li><li>Flask</li><li>pypdf</li>
+              <li><button type="button" class="tag" data-tag="RAG" aria-expanded="false">RAG</button></li>
+              <li><button type="button" class="tag" data-tag="Ollama" aria-expanded="false">Ollama</button></li>
+              <li><button type="button" class="tag" data-tag="Qwen2.5-7B" aria-expanded="false">Qwen2.5-7B</button></li>
+              <li><button type="button" class="tag" data-tag="bge-m3" aria-expanded="false">bge-m3</button></li>
+              <li><button type="button" class="tag" data-tag="NumPy" aria-expanded="false">NumPy</button></li>
+              <li><button type="button" class="tag" data-tag="Flask" aria-expanded="false">Flask</button></li>
+              <li><button type="button" class="tag" data-tag="pypdf" aria-expanded="false">pypdf</button></li>
             </ul>
           </div>
 
@@ -206,99 +250,120 @@
         </article>
 
         <div class="project-grid">
-          <article class="project card">
+          <article class="project card" data-project="checker">
             <span class="icon-tile"><i data-lucide="database"></i></span>
             <p class="label muted-label">Alexsys Solutions · 2026</p>
             <h3 data-i18n="p1_t">Drug interaction checker</h3>
             <p data-i18n="p1_d">Part of PharmaMind: a Flask catalogue on public BDPM (France) and data.gov.ma data. The model sits behind an interface, so it runs without a GPU and swaps through a .env setting.</p>
-            <ul class="tags"><li>Flask</li><li>SQLAlchemy</li><li>SQLite</li><li>Auth</li></ul>
+            <ul class="tags">
+              <li><button type="button" class="tag" data-tag="Flask" aria-expanded="false">Flask</button></li>
+              <li><button type="button" class="tag" data-tag="SQLAlchemy" aria-expanded="false">SQLAlchemy</button></li>
+              <li><button type="button" class="tag" data-tag="SQLite" aria-expanded="false">SQLite</button></li>
+              <li><button type="button" class="tag" data-tag="Auth" aria-expanded="false">Auth</button></li>
+            </ul>
           </article>
-          <article class="project card">
+          <article class="project card" data-project="boarding">
             <span class="icon-tile"><i data-lucide="school"></i></span>
             <p class="label muted-label">Suptech Santé · 2026</p>
             <h3 data-i18n="p2_t">Boarding school platform</h3>
             <p data-i18n="p2_d">Full-stack Django app for students, rooms, staff and incident reports, with 5 roles, granular permissions, a dashboard and email notifications.</p>
-            <ul class="tags"><li>Django</li><li>Python</li><li data-i18n="tag_roles">Roles</li><li>Email</li></ul>
+            <ul class="tags">
+              <li><button type="button" class="tag" data-tag="Django" aria-expanded="false">Django</button></li>
+              <li><button type="button" class="tag" data-tag="Python" aria-expanded="false">Python</button></li>
+              <li><button type="button" class="tag" data-tag="Roles" aria-expanded="false" data-i18n="tag_roles">Roles</button></li>
+              <li><button type="button" class="tag" data-tag="Email" aria-expanded="false">Email</button></li>
+            </ul>
           </article>
-          <article class="project card">
+          <article class="project card" data-project="water">
             <span class="icon-tile"><i data-lucide="droplet"></i></span>
             <p class="label muted-label"><span data-i18n="p3_org">Cadi Ayyad University</span> · 2023</p>
             <h3 data-i18n="p3_t">Well water quality, Oualidia</h3>
             <p data-i18n="p3_d">Final-year study: physico-chemical analysis of well water, compared with Morocco's national drinking-water standards.</p>
-            <ul class="tags"><li data-i18n="tag_lab">Lab analysis</li><li data-i18n="tag_water">Water chemistry</li><li data-i18n="tag_health">Public health</li></ul>
+            <ul class="tags">
+              <li><button type="button" class="tag" data-tag="Lab analysis" aria-expanded="false" data-i18n="tag_lab">Lab analysis</button></li>
+              <li><button type="button" class="tag" data-tag="Water chemistry" aria-expanded="false" data-i18n="tag_water">Water chemistry</button></li>
+              <li><button type="button" class="tag" data-tag="Public health" aria-expanded="false" data-i18n="tag_health">Public health</button></li>
+            </ul>
           </article>
         </div>
       </div>
     </section>
 
-    <!-- 5. ABOUT -->
-    <section class="section surface" id="about">
-      <div class="container about-grid">
-        <div data-reveal>
-          <p class="label accent-label" data-i18n="about_label">02 · About</p>
-          <h2 data-i18n="about_title">From the lab bench to the <em>language model.</em></h2>
-          <div class="avatar-card" id="avatar">
-            <canvas role="img" aria-label="3D avatar of Badreddine waving" data-i18n-attr="aria-label:avatar_label"></canvas>
-            <span class="capsule-badge" aria-hidden="true"><span class="badge-dot"></span><span data-i18n="avatar_hint">Hover to say hi</span></span>
-          </div>
-          <div class="signature">
-            <img src="assets/photo.jpg" alt="Portrait of Badreddine Etouabti" data-i18n-attr="alt:photo_alt" width="64" height="64">
-            <div>
-              <p class="sig-name">Badreddine Etouabti</p>
-              <p class="label muted-label" data-i18n="sig_role">Digital &amp; AI for Health</p>
+    <!-- 5. PROFESSIONAL EXPERIENCE -->
+    <section class="section surface" id="experience">
+      <div class="container">
+        <div class="section-head" data-reveal>
+          <p class="label accent-label" data-i18n="exp_label">03 · Professional experience</p>
+          <h2 data-i18n="exp_title">A path built on <em>precision.</em></h2>
+        </div>
+        <!-- Each .org-mark shows the organisation's initial. To use a logo instead,
+             replace the letter with <img src="assets/logos/name.png" alt=""> -->
+        <ol class="timeline">
+          <li class="entry" data-reveal>
+            <span class="org-mark" aria-hidden="true">A</span>
+            <div class="entry-main">
+              <h3 data-i18n="e1_r">AI Engineering Intern</h3>
+              <p class="org">Alexsys Solutions</p>
+              <p class="entry-meta"><span class="row-date">2026</span><span class="dot">·</span><span>Casablanca</span><span class="pill" data-i18n="k_intern">Internship</span></p>
             </div>
-          </div>
-        </div>
-        <div class="about-copy" data-reveal>
-          <p class="lead ink" data-i18n="about_p1">I'm in my second year of an engineering degree in Digital Engineering &amp; AI for Health at Suptech Santé, Mohammedia. I work where AI, software and medicine meet.</p>
-          <p data-i18n="about_p2">Before writing code I spent years in labs: industrial quality control at OCP and biological analysis at Hôpital Mohammed V. That taught me something AI often forgets. In health, a wrong answer is a risk, not a bug. So I build systems that cite their sources and say "information not found" when they should.</p>
-          <div class="stats">
-            <div class="stat"><span class="stat-num" data-count="7" data-suffix="B">7B</span><span class="stat-label" data-i18n="st1">LLM parameters, run fully on a local machine</span></div>
-            <div class="stat"><span class="stat-num" data-count="4">4</span><span class="stat-label" data-i18n="st2">Lab, hospital and industry roles</span></div>
-            <div class="stat"><span class="stat-num" data-count="5">5</span><span class="stat-label" data-i18n="st3">User roles in my Django platform</span></div>
-            <div class="stat"><span class="stat-num" data-count="3">3</span><span class="stat-label" data-i18n="st4">Working languages: Arabic, French, English</span></div>
-          </div>
-        </div>
+            <p class="entry-desc" data-i18n="e1_d">Built PharmaMind, a RAG assistant over drug leaflets running on a local LLM, and the Flask catalogue around it.</p>
+          </li>
+          <li class="entry" data-reveal>
+            <span class="org-mark" aria-hidden="true">O</span>
+            <div class="entry-main">
+              <h3 data-i18n="e3_r">Senior Laboratory Technician</h3>
+              <p class="org">OCP · Oksa Lab</p>
+              <p class="entry-meta"><span class="row-date" data-i18n="e3_date">Dec 2024 — Aug 2025</span><span class="pill" data-i18n="k_work">Work</span></p>
+            </div>
+            <p class="entry-desc" data-i18n="e3_d">Chemical analysis and quality control (titration, pH, spectrophotometry) to industrial standards; compliance records and HSE rules.</p>
+          </li>
+          <li class="entry" data-reveal>
+            <span class="org-mark" aria-hidden="true">H</span>
+            <div class="entry-main">
+              <h3 data-i18n="e4_r">Laboratory Technologist Intern</h3>
+              <p class="org">Hôpital Mohammed V</p>
+              <p class="entry-meta"><span class="row-date" data-i18n="e4_date">3 months</span><span class="pill" data-i18n="k_intern">Internship</span></p>
+            </div>
+            <p class="entry-desc" data-i18n="e4_d">Biological sample analysis and metrology of lab analyzers: checking instrument precision and reliability.</p>
+          </li>
+          <li class="entry" data-reveal>
+            <span class="org-mark" aria-hidden="true">U</span>
+            <div class="entry-main">
+              <h3 data-i18n="e5_r">Quality Control Intern</h3>
+              <p class="org">UNIMER</p>
+              <p class="entry-meta"><span class="row-date" data-i18n="e5_date">2 months</span><span class="pill" data-i18n="k_intern">Internship</span></p>
+            </div>
+            <p class="entry-desc" data-i18n="e5_d">Inspection of products and production equipment, sampling and quality assurance.</p>
+          </li>
+        </ol>
       </div>
     </section>
 
-    <!-- 6. EXPERIENCE -->
-    <section class="section" id="experience">
+    <!-- 6. EDUCATION -->
+    <section class="section" id="education">
       <div class="container">
         <div class="section-head" data-reveal>
-          <p class="label accent-label" data-i18n="exp_label">03 · Experience &amp; education</p>
-          <h2 data-i18n="exp_title">A path built on <em>precision.</em></h2>
+          <p class="label accent-label" data-i18n="edu_label">04 · Education</p>
+          <h2 data-i18n="edu_title">Where the <em>rigor</em> comes from.</h2>
         </div>
         <ol class="timeline">
-          <li class="row" data-reveal>
-            <div class="row-meta"><span class="row-date">2026</span><span class="pill" data-i18n="k_work">Work</span></div>
-            <div class="row-role"><h3 data-i18n="e1_r">AI Developer Intern</h3><p class="org">Alexsys Solutions · Casablanca</p></div>
-            <p class="row-desc" data-i18n="e1_d">Built PharmaMind, a RAG assistant over drug leaflets running on a local LLM, and the Flask catalogue around it.</p>
+          <li class="entry" data-reveal>
+            <span class="org-mark" aria-hidden="true">S</span>
+            <div class="entry-main">
+              <h3 data-i18n="e2_r">Engineering degree, Digital &amp; AI for Health</h3>
+              <p class="org">Suptech Santé</p>
+              <p class="entry-meta"><span class="row-date" data-i18n="e2_date">2025 — now</span><span class="dot">·</span><span>Mohammedia</span></p>
+            </div>
+            <p class="entry-desc" data-i18n="e2_d">Machine learning, AI techniques, data mining, medical imaging, web development and advanced databases.</p>
           </li>
-          <li class="row" data-reveal>
-            <div class="row-meta"><span class="row-date" data-i18n="e2_date">2025 — now</span><span class="pill pill-edu" data-i18n="k_edu">Education</span></div>
-            <div class="row-role"><h3 data-i18n="e2_r">Engineering degree, Digital &amp; AI for Health</h3><p class="org">Suptech Santé · Mohammedia</p></div>
-            <p class="row-desc" data-i18n="e2_d">Machine learning, AI techniques, data mining, medical imaging, web development and advanced databases.</p>
-          </li>
-          <li class="row" data-reveal>
-            <div class="row-meta"><span class="row-date" data-i18n="e3_date">Dec 2024 — Aug 2025</span><span class="pill" data-i18n="k_work">Work</span></div>
-            <div class="row-role"><h3 data-i18n="e3_r">Senior Laboratory Technician</h3><p class="org">OCP · Oksa Lab</p></div>
-            <p class="row-desc" data-i18n="e3_d">Chemical analysis and quality control (titration, pH, spectrophotometry) to industrial standards; compliance records and HSE rules.</p>
-          </li>
-          <li class="row" data-reveal>
-            <div class="row-meta"><span class="row-date" data-i18n="e4_date">3 months</span><span class="pill" data-i18n="k_intern">Internship</span></div>
-            <div class="row-role"><h3 data-i18n="e4_r">Laboratory Technologist Intern</h3><p class="org">Hôpital Mohammed V</p></div>
-            <p class="row-desc" data-i18n="e4_d">Biological sample analysis and metrology of lab analyzers: checking instrument precision and reliability.</p>
-          </li>
-          <li class="row" data-reveal>
-            <div class="row-meta"><span class="row-date" data-i18n="e5_date">2 months</span><span class="pill" data-i18n="k_intern">Internship</span></div>
-            <div class="row-role"><h3 data-i18n="e5_r">Quality Control Intern</h3><p class="org">UNIMER</p></div>
-            <p class="row-desc" data-i18n="e5_d">Inspection of products and production equipment, sampling and quality assurance.</p>
-          </li>
-          <li class="row" data-reveal>
-            <div class="row-meta"><span class="row-date">2019 — 2023</span><span class="pill pill-edu" data-i18n="k_edu">Education</span></div>
-            <div class="row-role"><h3 data-i18n="e6_r">BSc in Industrial Chemistry</h3><p class="org"><span data-i18n="p3_org">Cadi Ayyad University</span> · Safi</p></div>
-            <p class="row-desc" data-i18n="e6_d">Final project on the potability of well water in Oualidia.</p>
+          <li class="entry" data-reveal>
+            <span class="org-mark" aria-hidden="true">C</span>
+            <div class="entry-main">
+              <h3 data-i18n="e6_r">BSc in Industrial Chemistry</h3>
+              <p class="org" data-i18n="p3_org">Cadi Ayyad University</p>
+              <p class="entry-meta"><span class="row-date">2019 — 2023</span><span class="dot">·</span><span>Safi</span></p>
+            </div>
+            <p class="entry-desc" data-i18n="e6_d">Final project on the potability of well water in Oualidia.</p>
           </li>
         </ol>
       </div>
@@ -308,7 +373,7 @@
     <section class="section surface" id="skills">
       <div class="container">
         <div class="section-head" data-reveal>
-          <p class="label accent-label" data-i18n="sk_label">04 · Toolkit</p>
+          <p class="label accent-label" data-i18n="sk_label">05 · Toolkit</p>
           <h2 data-i18n="sk_title">What I <em>work with.</em></h2>
         </div>
         <div class="skills-grid">
@@ -339,7 +404,7 @@
     <!-- 8. CONTACT -->
     <section class="section deep" id="contact">
       <div class="container contact-inner">
-        <p class="label contact-label" data-i18n="ct_label">05 · Contact</p>
+        <p class="label contact-label" data-i18n="ct_label">06 · Contact</p>
         <h2 class="display contact-title" data-i18n="ct_title">Let's build AI that <em>helps patients.</em></h2>
         <p class="contact-text" data-i18n="ct_text">I'm looking for an internship in AI, data or software for healthcare. Based in Casablanca, open to remote.</p>
         <div class="contact-actions" data-reveal>
