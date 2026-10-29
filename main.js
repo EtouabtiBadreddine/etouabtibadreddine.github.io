@@ -6,6 +6,14 @@
 const translations = {
   en: {},
   fr: {
+    doc_title: 'Badreddine Etouabti — IA, data &amp; dev pour la santé',
+    doc_desc: 'Élève ingénieur en Digital &amp; IA pour la santé. Je crée des assistants IA privés et sourcés pour la santé.',
+    theme_label: 'Basculer mode clair / sombre',
+    menu_label: 'Ouvrir le menu',
+    photo_alt: 'Portrait de Badreddine Etouabti',
+    capsule_label: 'Capsule 3D',
+    capsule_hint: 'Faites-la tourner',
+
     nav_work: 'Projets',
     nav_about: 'À propos',
     nav_experience: 'Parcours',
@@ -159,20 +167,38 @@ const heroTitle = document.querySelector('.hero-title');
 const contactTitle = document.querySelector('.contact-title');
 
 /* ---------- Language ---------- */
+// data-i18n-attr="aria-label:key;alt:key2" translates attributes
+const attrPairs = (el) => el.dataset.i18nAttr.split(';').map((p) => p.split(':'));
+const metaDesc = document.querySelector('meta[name="description"]');
+
 document.querySelectorAll('[data-i18n]').forEach((el) => {
   translations.en[el.dataset.i18n] = el.innerHTML;
 });
+document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
+  attrPairs(el).forEach(([attr, key]) => { translations.en[key] = el.getAttribute(attr); });
+});
+translations.en.doc_title = document.title;
+translations.en.doc_desc = metaDesc.content;
 
 let lang = storage.get('lang') === 'fr' ? 'fr' : 'en';
 const langBtn = document.getElementById('langToggle');
 
+// decode entities for plain-text targets (title, attributes)
+const decode = (html) => { const t = document.createElement('textarea'); t.innerHTML = html; return t.value; };
+
 function applyLang(next) {
   lang = next;
   const dict = translations[lang];
+  const t = (key) => dict[key] ?? translations.en[key];
   document.querySelectorAll('[data-i18n]').forEach((el) => {
-    const v = dict[el.dataset.i18n] ?? translations.en[el.dataset.i18n];
+    const v = t(el.dataset.i18n);
     if (v !== undefined) el.innerHTML = v;
   });
+  document.querySelectorAll('[data-i18n-attr]').forEach((el) => {
+    attrPairs(el).forEach(([attr, key]) => { if (t(key) != null) el.setAttribute(attr, decode(t(key))); });
+  });
+  document.title = decode(t('doc_title'));
+  metaDesc.content = decode(t('doc_desc'));
   root.lang = lang;
   langBtn.textContent = lang === 'en' ? 'FR' : 'EN';
   langBtn.setAttribute('aria-label', lang === 'en' ? 'Passer en français' : 'Switch to English');
@@ -181,6 +207,7 @@ function applyLang(next) {
 }
 
 applyLang(lang);
+root.classList.add('i18n-ready');
 langBtn.addEventListener('click', () => {
   const next = lang === 'en' ? 'fr' : 'en';
   storage.set('lang', next);
@@ -197,6 +224,17 @@ themeBtn.addEventListener('click', () => {
   root.dataset.theme = next;
   storage.set('theme', next);
 });
+
+/* ---------- Mobile menu ---------- */
+const nav = document.querySelector('.nav');
+const menuBtn = document.getElementById('menuToggle');
+const setMenu = (open) => {
+  nav.classList.toggle('open', open);
+  menuBtn.setAttribute('aria-expanded', String(open));
+};
+menuBtn.addEventListener('click', () => setMenu(!nav.classList.contains('open')));
+document.querySelectorAll('.mobile-menu a').forEach((a) => a.addEventListener('click', () => setMenu(false)));
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') setMenu(false); });
 
 /* ---------- Copy email ---------- */
 const copyBtn = document.getElementById('copyEmail');
@@ -233,6 +271,137 @@ if (tickerAnim) {
   track.addEventListener('mouseenter', () => setRate(0.25));
   track.addEventListener('mouseleave', () => setRate(1));
 }
+
+/* ---------- 3D capsule (three.js) ---------- */
+(function initCapsule() {
+  const host = document.getElementById('capsule');
+  const canvas = host.querySelector('canvas');
+  const shadow = host.querySelector('.capsule-shadow');
+  const THREE = window.THREE;
+  let renderer;
+  try {
+    if (!THREE) throw new Error('three.js missing');
+    renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+  } catch (e) {
+    host.classList.add('no-webgl');
+    return;
+  }
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  renderer.outputEncoding = THREE.sRGBEncoding;
+
+  const scene = new THREE.Scene();
+  const camera = new THREE.PerspectiveCamera(30, 1, 0.1, 100);
+  const srgb = (hex) => new THREE.Color(hex).convertSRGBToLinear();
+
+  // One capsule half: hemisphere cap + straight wall, drawn by revolving a profile
+  const halfGeo = (radius, length) => {
+    const pts = [];
+    for (let i = 0; i <= 20; i++) {
+      const a = (i / 20) * Math.PI / 2;
+      pts.push(new THREE.Vector2(Math.max(Math.sin(a) * radius, 0.0001), length + Math.cos(a) * radius));
+    }
+    pts.push(new THREE.Vector2(radius, 0));
+    return new THREE.LatheGeometry(pts, 64);
+  };
+  const glossy = (hex, rough) => new THREE.MeshPhysicalMaterial({
+    color: srgb(hex), roughness: rough, metalness: 0, clearcoat: 1, clearcoatRoughness: 0.12, side: THREE.DoubleSide,
+  });
+
+  const R = 0.82;
+  const capsule = new THREE.Group();
+  const cap = new THREE.Mesh(halfGeo(R * 1.045, 1.25), glossy('#2E5BFF', 0.28));
+  cap.position.y = -0.12;
+  const body = new THREE.Mesh(halfGeo(R, 1.25), glossy('#FBFBF8', 0.38));
+  body.rotation.x = Math.PI;
+  body.position.y = 0.12;
+  capsule.add(cap, body);
+
+  const tilt = new THREE.Group(); // pointer tilt wraps the idle spin
+  tilt.add(capsule);
+  tilt.rotation.z = -0.62;
+  scene.add(tilt);
+
+  // small floating beads around the capsule
+  const beads = [
+    { r: 0.2, color: '#2E5BFF', pos: [-1.9, 1.5, -0.6], speed: 1.1 },
+    { r: 0.14, color: '#FFFFFF', pos: [1.85, 1.25, 0.4], speed: 0.8 },
+    { r: 0.26, color: '#C9D5FF', pos: [1.6, -1.7, -0.9], speed: 0.95 },
+    { r: 0.11, color: '#2E5BFF', pos: [-1.5, -1.65, 0.6], speed: 1.3 },
+  ].map((b) => {
+    const m = new THREE.Mesh(new THREE.SphereGeometry(b.r, 32, 32), glossy(b.color, 0.3));
+    m.position.set(...b.pos);
+    m.userData = b;
+    scene.add(m);
+    return m;
+  });
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xd9d5c8, 0.75));
+  const key = new THREE.DirectionalLight(0xffffff, 1.15);
+  key.position.set(3, 5, 6);
+  const rim = new THREE.DirectionalLight(0xa9bbff, 0.9);
+  rim.position.set(-5, -1, -4);
+  const fill = new THREE.PointLight(0xffffff, 0.45);
+  fill.position.set(-4, 2, 5);
+  scene.add(key, rim, fill);
+
+  const resize = () => {
+    const w = host.clientWidth, h = host.clientHeight;
+    if (!w || !h) return;
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.position.set(0, 0, w / h < 0.95 ? 13 : 11.5);
+    camera.updateProjectionMatrix();
+    render();
+  };
+
+  // pointer: tilt toward the cursor, drag to spin (mouse / pen only, touch keeps scrolling)
+  const target = { x: 0, y: 0 };
+  let spin = 0.0035, dragging = false, lastX = 0;
+  host.addEventListener('pointermove', (e) => {
+    if (e.pointerType === 'touch') return;
+    const r = host.getBoundingClientRect();
+    target.x = ((e.clientX - r.left) / r.width - 0.5) * 2;
+    target.y = ((e.clientY - r.top) / r.height - 0.5) * 2;
+    if (dragging) { spin += (e.clientX - lastX) * 0.0009; lastX = e.clientX; }
+  });
+  host.addEventListener('pointerleave', () => { target.x = 0; target.y = 0; dragging = false; });
+  canvas.addEventListener('pointerdown', (e) => {
+    if (e.pointerType === 'touch') return;
+    dragging = true; lastX = e.clientX;
+  });
+  window.addEventListener('pointerup', () => { dragging = false; });
+
+  const clock = new THREE.Clock();
+  function render() {
+    const t = clock.getElapsedTime();
+    if (!reduceMotion) {
+      capsule.rotation.y += spin;
+      spin += (0.0035 - spin) * 0.03; // ease back to idle speed after a drag
+      const float = Math.sin(t * 1.1) * 0.12;
+      tilt.position.y = float;
+      tilt.rotation.x += (target.y * 0.35 - tilt.rotation.x) * 0.06;
+      tilt.rotation.y += (target.x * 0.45 - tilt.rotation.y) * 0.06;
+      beads.forEach((b) => { b.position.y = b.userData.pos[1] + Math.sin(t * b.userData.speed + b.userData.pos[0]) * 0.15; });
+      // shadow shrinks and fades as the capsule floats up
+      shadow.style.transform = `translateX(-50%) scale(${1 - float * 0.8})`;
+      shadow.style.opacity = String(0.85 - float * 1.2);
+    }
+    renderer.render(scene, camera);
+  }
+
+  let running = false, frame = 0;
+  const loop = () => { render(); frame = requestAnimationFrame(loop); };
+  const setRunning = (on) => {
+    if (reduceMotion || on === running) return;
+    running = on;
+    if (on) frame = requestAnimationFrame(loop);
+    else cancelAnimationFrame(frame);
+  };
+  new ResizeObserver(resize).observe(host);
+  new IntersectionObserver(([entry]) => setRunning(entry.isIntersecting)).observe(host);
+  document.addEventListener('visibilitychange', () => setRunning(!document.hidden && host.getBoundingClientRect().bottom > 0));
+  resize();
+})();
 
 /* ---------- Stats count-up ---------- */
 const statNums = document.querySelectorAll('.stat-num');

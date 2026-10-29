@@ -7,8 +7,20 @@
   <meta name="description" content="Engineering student in Digital & AI for Health. I build private, source-backed AI assistants for healthcare.">
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='9' fill='%232E5BFF'/%3E%3C/svg%3E">
 
+  <!-- Link previews (LinkedIn, WhatsApp, X…). Once hosted, change og:image / og:url to full URLs,
+       e.g. https://your-site.vercel.app/assets/og.png -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Badreddine Etouabti — AI, data & dev for health">
+  <meta property="og:description" content="Engineering student in Digital & AI for Health. I build private, source-backed AI assistants for healthcare.">
+  <meta property="og:image" content="assets/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="theme-color" content="#F2F1EC" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#0B0D12" media="(prefers-color-scheme: dark)">
+
   <script>
-    // Apply saved theme + motion flag before first paint
+    // Apply saved theme, language + motion flag before first paint
     (function () {
       var d = document.documentElement;
       try {
@@ -17,6 +29,8 @@
         var l = localStorage.getItem('lang');
         if (l === 'fr') d.setAttribute('lang', 'fr');
       } catch (e) {}
+      // French text is swapped in by main.js; never stay hidden if it fails
+      setTimeout(function () { d.classList.add('i18n-ready'); }, 2500);
       if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) d.classList.add('motion');
     })();
   </script>
@@ -47,12 +61,22 @@
       </nav>
       <div class="nav-actions">
         <button class="icon-btn lang-btn" id="langToggle" type="button" aria-label="Switch language">FR</button>
-        <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle light / dark mode">
+        <button class="icon-btn" id="themeToggle" type="button" aria-label="Toggle light / dark mode" data-i18n-attr="aria-label:theme_label">
           <i data-lucide="moon" class="i-moon"></i><i data-lucide="sun" class="i-sun"></i>
         </button>
         <a class="btn btn-accent btn-sm" href="mailto:etouabtibadreddine@gmail.com"><span data-i18n="nav_email">Email me</span> <span aria-hidden="true">↗</span></a>
+        <button class="icon-btn menu-btn" id="menuToggle" type="button" aria-expanded="false" aria-controls="mobileMenu" aria-label="Open menu" data-i18n-attr="aria-label:menu_label">
+          <i data-lucide="menu" class="i-open"></i><i data-lucide="x" class="i-close"></i>
+        </button>
       </div>
     </div>
+    <nav class="mobile-menu" id="mobileMenu" aria-label="Mobile">
+      <a href="#work" data-i18n="nav_work">Work</a>
+      <a href="#about" data-i18n="nav_about">About</a>
+      <a href="#experience" data-i18n="nav_experience">Experience</a>
+      <a href="#contact" data-i18n="nav_contact">Contact</a>
+      <a href="mailto:etouabtibadreddine@gmail.com" class="mobile-email"><span data-i18n="nav_email">Email me</span> ↗</a>
+    </nav>
   </header>
 
   <main id="top">
@@ -77,8 +101,11 @@
             <li data-i18n="meta_langs">Arabic · French · English</li>
           </ul>
         </div>
-        <div class="hero-visual hero-anim" data-hero="visual">
-          <iframe src="https://my.spline.design/portfolioherocapsule-sdojBWhk1ChK6NFJqZWGPM1n/" title="3D capsule" frameborder="0" allow="autoplay; fullscreen"></iframe>
+        <div class="hero-visual hero-anim" data-hero="visual" id="capsule">
+          <canvas role="img" aria-label="3D capsule" data-i18n-attr="aria-label:capsule_label"></canvas>
+          <div class="capsule-shadow" aria-hidden="true"></div>
+          <div class="capsule-fallback" aria-hidden="true"></div>
+          <span class="capsule-badge" aria-hidden="true"><span class="badge-dot"></span><span data-i18n="capsule_hint">Drag to spin</span></span>
         </div>
       </div>
     </section>
@@ -186,7 +213,7 @@
           <p class="label accent-label" data-i18n="about_label">02 · About</p>
           <h2 data-i18n="about_title">From the lab bench to the <em>language model.</em></h2>
           <div class="signature">
-            <img src="assets/photo.jpg" alt="Portrait of Badreddine Etouabti" width="64" height="64">
+            <img src="assets/photo.jpg" alt="Portrait of Badreddine Etouabti" data-i18n-attr="alt:photo_alt" width="64" height="64">
             <div>
               <p class="sig-name">Badreddine Etouabti</p>
               <p class="label muted-label" data-i18n="sig_role">Digital &amp; AI for Health</p>
@@ -305,6 +332,7 @@
     </section>
   </main>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="https://unpkg.com/lucide@0.460.0/dist/umd/lucide.min.js"></script>
