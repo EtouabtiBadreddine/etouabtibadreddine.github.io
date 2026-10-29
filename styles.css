@@ -171,10 +171,13 @@ em {
 .mobile-menu a:last-child { border-bottom: 0; }
 .mobile-menu .mobile-email { color: var(--accent); }
 
-@media (max-width: 640px) {
+/* six links don't fit on tablets: switch to the menu button below 1024px */
+@media (max-width: 1024px) {
   .nav-links { display: none; }
   .menu-btn { display: inline-grid; }
   .nav.open .mobile-menu { display: flex; }
+}
+@media (max-width: 640px) {
   .brand { font-size: 15px; }
   .nav-actions .btn-sm { padding: 0 14px; }
 }
