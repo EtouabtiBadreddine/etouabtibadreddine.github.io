@@ -108,8 +108,8 @@
 
   <main id="top">
 
-    <!-- 1. ABOUT — first screen: 3D avatar + presentation -->
-    <section class="section surface about-hero" id="about">
+    <!-- 1. ABOUT — first screen: illustrated scene (day / night with the theme) + presentation -->
+    <section class="section about-hero" id="about">
       <div class="container">
         <div class="about-grid">
           <div class="about-copy" data-reveal>
@@ -125,16 +125,56 @@
               </div>
             </div>
           </div>
-          <div class="avatar-card" id="avatar">
-            <canvas role="img" aria-label="3D avatar of Badreddine waving" data-i18n-attr="aria-label:avatar_label"></canvas>
-            <span class="capsule-badge" aria-hidden="true"><span class="badge-dot"></span><span data-i18n="avatar_hint">Hover to say hi</span></span>
+          <div class="scene" id="scene">
+            <img class="scene-img scene-day" src="assets/scene-day.webp" width="1254" height="1254" alt="Illustration of Badreddine coding on his laptop in a sunny living room, next to a little wizard robot" data-i18n-attr="alt:scene_alt">
+            <img class="scene-img scene-night" src="assets/scene-night.webp" width="1254" height="1254" alt="Illustration of Badreddine coding on his laptop at night, next to a little wizard robot" data-i18n-attr="alt:scene_alt_night">
+            <!-- live layer, in image coordinates: lamp pull cord + the bot's eyes -->
+            <svg class="scene-fx" viewBox="0 0 1254 1254" aria-hidden="true">
+              <defs>
+                <radialGradient id="beadGrad" cx="40%" cy="35%" r="65%">
+                  <stop offset="0" stop-color="#9A948D"/><stop offset=".45" stop-color="#3A3632"/><stop offset="1" stop-color="#121110"/>
+                </radialGradient>
+                <radialGradient id="eyeGrad" cx="45%" cy="40%" r="60%">
+                  <stop offset="0" stop-color="#FFF6C4"/><stop offset=".55" stop-color="#FFD45A"/><stop offset="1" stop-color="#FFB627"/>
+                </radialGradient>
+                <filter id="eyeGlow" x="-100%" y="-100%" width="300%" height="300%">
+                  <feGaussianBlur stdDeviation="5" result="b"/>
+                  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+                </filter>
+              </defs>
+              <g class="cord" id="cord">
+                <line class="cord-line" id="cordLine" x1="382" y1="244" x2="382" y2="334"/>
+                <g id="cordBead">
+                  <rect x="378" y="332" width="8" height="9" rx="2" fill="#2A2724"/>
+                  <circle cx="382" cy="351" r="10.5" fill="url(#beadGrad)"/>
+                </g>
+              </g>
+              <g class="bot-eyes" id="botEyes" filter="url(#eyeGlow)">
+                <ellipse class="eye" cx="411" cy="963" rx="12.5" ry="14" fill="url(#eyeGrad)"/>
+                <ellipse class="eye" cx="490.5" cy="950" rx="10.5" ry="12.5" fill="url(#eyeGrad)"/>
+              </g>
+            </svg>
+            <span class="sparkles" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i></span>
+            <button class="lamp-cord" id="lampCord" type="button" aria-label="Pull the lamp cord to switch light / dark mode" data-i18n-attr="aria-label:cord_label;title:cord_title" title="Pull me"></button>
           </div>
         </div>
         <div class="stats" data-reveal>
-          <div class="stat"><span class="stat-num" data-count="7" data-suffix="B">7B</span><span class="stat-label" data-i18n="st1">LLM parameters, run fully on a local machine</span></div>
-          <div class="stat"><span class="stat-num" data-count="4">4</span><span class="stat-label" data-i18n="st2">Lab, hospital and industry roles</span></div>
-          <div class="stat"><span class="stat-num" data-count="5">5</span><span class="stat-label" data-i18n="st3">User roles in my Django platform</span></div>
-          <div class="stat"><span class="stat-num" data-count="3">3</span><span class="stat-label" data-i18n="st4">Working languages: Arabic, French, English</span></div>
+          <div class="stat">
+            <span class="stat-icon" aria-hidden="true"><i data-lucide="cpu"></i></span>
+            <div class="stat-body"><span class="stat-num" data-count="7" data-suffix="B">7B</span><span class="stat-label" data-i18n="st1">LLM parameters, run fully on a local machine</span><span class="stat-sub" data-i18n="st1_sub">Qwen2.5-7B in PharmaMind</span></div>
+          </div>
+          <div class="stat">
+            <span class="stat-icon" aria-hidden="true"><i data-lucide="flask-conical"></i></span>
+            <div class="stat-body"><span class="stat-num" data-count="4">4</span><span class="stat-label" data-i18n="st2">Lab, hospital and industry roles</span><span class="stat-sub">OCP · Hôpital Mohammed V · UNIMER · Alexsys</span></div>
+          </div>
+          <div class="stat">
+            <span class="stat-icon" aria-hidden="true"><i data-lucide="code"></i></span>
+            <div class="stat-body"><span class="stat-num" data-count="5">5</span><span class="stat-label" data-i18n="st3">User roles in my Django platform</span><span class="stat-sub" data-i18n="st3_sub">Boarding school platform, Suptech Santé</span></div>
+          </div>
+          <div class="stat">
+            <span class="stat-icon" aria-hidden="true"><i data-lucide="graduation-cap"></i></span>
+            <div class="stat-body"><span class="stat-num" data-count="3">3</span><span class="stat-label" data-i18n="st4">Fields I bridge</span><span class="stat-sub" data-i18n="st4_sub">AI · Software · Medicine</span></div>
+          </div>
         </div>
       </div>
       <a class="scroll-cue" href="#intro" aria-label="Scroll to the next section" data-i18n-attr="aria-label:scroll_label">
